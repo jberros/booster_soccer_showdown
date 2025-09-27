@@ -41,17 +41,14 @@ class LowerT1JoyStick:
                 - env: Environment-specific parameters like number of actions and observations.
                 - normalization: Scaling factors for observation normalization.
         """
-        mj_model = env.sim.model._model
-        mj_data = env.sim.data._data
+
+        
 
         self.env = env
         self.model, self.cfg = self.load()
 
-        self.nu = len(env.robots[0].get_obs()[0])
-        self.diff = mj_model.nu - self.nu
-        self.qpos_shape = 7 + self.nu
-
-        self.reset(mj_model, mj_data)
+        self.get_robot_properties(env)
+        self.reset(env)
 
     @staticmethod
     def quat_rotate_inverse(q: np.ndarray, v: np.ndarray):
@@ -94,8 +91,22 @@ class LowerT1JoyStick:
         model.eval()
 
         return model, cfg
+    
+    def get_robot_properties(self, env):
 
-    def reset(self, mj_model, mj_data):
+        _, mj_model = self.get_env_data_model(env)
+        self.nu = len(env.robots[0].get_obs()[0])
+        self.diff = mj_model.nu - self.nu
+        self.qpos_shape = 7 + self.nu
+    
+    def get_env_data_model(self, env):
+
+        mj_model = env.sim.model._model
+        mj_data = env.sim.data._data
+
+        return mj_data, mj_model
+
+    def reset(self, env):
         """
         Resets the controller's internal state and initializes Mujoco's joint positions
         and control parameters based on the configuration.
@@ -104,6 +115,8 @@ class LowerT1JoyStick:
             mj_model: Mujoco model object.
             mj_data: Mujoco data object.
         """
+
+        mj_data, mj_model = self.get_env_data_model(env)
         self.default_dof_pos = np.zeros(self.nu, dtype=np.float32)
         self.dof_stiffness = np.zeros(self.nu, dtype=np.float32)
         self.dof_damping = np.zeros(self.nu, dtype=np.float32)
@@ -148,7 +161,7 @@ class LowerT1JoyStick:
         self.gait_frequency = self.gait_process = 0.0
         self.it = 0
 
-    def get_obs(self, command):
+    def get_obs(self, command, mj_data):
         """
         Constructs the observation vector for the control policy.
 
@@ -165,7 +178,6 @@ class LowerT1JoyStick:
                 - Previous actions
         """
 
-        mj_data = self.env.sim.data._data
         lin_vel_x, lin_vel_y, ang_vel_yaw = map(float, command)
 
         if lin_vel_x == 0 and lin_vel_y == 0 and ang_vel_yaw == 0:
@@ -193,23 +205,24 @@ class LowerT1JoyStick:
 
         return obs
     
-    def get_actions(self, obs):
+    def get_actions(self, command):
         """
         Generates joint control signals based on the current observation
         and the policy model.
 
         Args:
-            obs (np.ndarray): Current observation vector.
+            command (tuple/list): Desired (lin_vel_x, lin_vel_y, ang_vel_yaw).
 
         Returns:
             np.ndarray: Control signals for the actuators.
         """
         
-        mj_model = self.env.sim.model._model
-        mj_data = self.env.sim.data._data
+        mj_data, mj_model = self.get_env_data_model(self.env)
+        obs = self.get_obs(command, mj_data)
 
         dof_pos = mj_data.qpos.astype(np.float32)[14+self.diff:]
         dof_vel = mj_data.qvel.astype(np.float32)[12+self.diff:]
+        
         if self.it % self.cfg["control"]["decimation"] == 0:
             dist = self.model(torch.tensor(obs.reshape(1,-1)))
             self.actions[:] = dist.detach().numpy()

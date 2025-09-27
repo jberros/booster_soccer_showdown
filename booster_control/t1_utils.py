@@ -147,21 +147,12 @@ class LowerT1JoyStick:
         )
 
         mujoco.mj_forward(mj_model, mj_data)
-
-        self.default_dof_pos = np.array([-0.2, 0.0, 0.0, 0.4, -0.25, 0.0,
-             -0.2, 0.0, 0.0, 0.4, -0.25, 0.0])
-        
-        self.dof_stiffness = np.array([200.0, 200.0, 200.0, 200.0, 50.0, 50.0,
-             200.0, 200.0, 200.0, 200.0, 50.0, 50.0])
-        
-        self.dof_damping = np.array([5.0, 5.0, 5.0, 5.0, 1.0, 1.0,
-             5.0, 5.0, 5.0, 5.0, 1.0, 1.0])
         self.actions = np.zeros((self.cfg["env"]["num_actions"]), dtype=np.float32)
         self.dof_targets = np.zeros(self.default_dof_pos.shape, dtype=np.float32)
         self.gait_frequency = self.gait_process = 0.0
         self.it = 0
 
-    def get_obs(self, command, mj_data):
+    def get_obs(self, command, obs, info):
         """
         Constructs the observation vector for the control policy.
 
@@ -185,10 +176,10 @@ class LowerT1JoyStick:
         else:
             self.gait_frequency = np.average(self.cfg["commands"]["gait_frequency"])
 
-        dof_pos = mj_data.qpos.astype(np.float32)[14+self.diff:]
-        dof_vel = mj_data.qvel.astype(np.float32)[12+self.diff:]
-        quat = mj_data.sensor("robot_0:torso_quat").data[[1, 2, 3, 0]].astype(np.float32)
-        base_ang_vel = mj_data.sensor("robot_0:torso_gyro").data.astype(np.float32)
+        dof_pos = obs[:12]
+        dof_vel = obs[12:24]
+        quat = info["robot_quat"]
+        base_ang_vel = info["robot_gyro"]
         projected_gravity = self.quat_rotate_inverse(quat, np.array([0.0, 0.0, -1.0]))
         
         obs = np.zeros(self.cfg["env"]["num_observations"], dtype=np.float32)
@@ -205,7 +196,7 @@ class LowerT1JoyStick:
 
         return obs
     
-    def get_actions(self, command):
+    def get_actions(self, command, observation, info):
         """
         Generates joint control signals based on the current observation
         and the policy model.
@@ -217,11 +208,11 @@ class LowerT1JoyStick:
             np.ndarray: Control signals for the actuators.
         """
         
-        mj_data, mj_model = self.get_env_data_model(self.env)
-        obs = self.get_obs(command, mj_data)
+        _, mj_model = self.get_env_data_model(self.env)
+        obs = self.get_obs(command, observation, info)
 
-        dof_pos = mj_data.qpos.astype(np.float32)[14+self.diff:]
-        dof_vel = mj_data.qvel.astype(np.float32)[12+self.diff:]
+        dof_pos = observation[:12]
+        dof_vel = observation[12:24]
 
         if self.it % self.cfg["control"]["decimation"] == 0:
             dist = self.model(torch.tensor(obs.reshape(1,-1)))

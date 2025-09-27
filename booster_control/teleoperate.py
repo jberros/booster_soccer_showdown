@@ -38,7 +38,7 @@ def teleop(env_name: str = "LowerT1GoaliePenaltyKick-v0"):
         while not (terminated or truncated):
             # Get keyboard input and apply it directly to the environment
             command = keyboard_controller.advance()
-            ctrl = lower_t1_robot.get_actions(command)
+            ctrl = lower_t1_robot.get_actions(command, observation, info)
             observation, reward, terminated, truncated, info = env.step(ctrl)
             
             if terminated or truncated:

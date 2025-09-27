@@ -158,6 +158,8 @@ class LowerT1JoyStick:
 
         Args:
             command (tuple/list): Desired (lin_vel_x, lin_vel_y, ang_vel_yaw).
+            obs (np.array): Current observation from the environment
+            info (dict): Information dict from the environment
 
         Returns:
             np.ndarray: Normalized observation vector containing:
@@ -202,7 +204,9 @@ class LowerT1JoyStick:
         and the policy model.
 
         Args:
-            command (tuple/list): Desired (lin_vel_x, lin_vel_y, ang_vel_yaw).
+            command (tuple/list): Desired (lin_vel_x, lin_vel_y, ang_vel_yaw).  
+            obs (np.array): Current observation from the environment
+            info (dict): Information dict from the environment
 
         Returns:
             np.ndarray: Control signals for the actuators.

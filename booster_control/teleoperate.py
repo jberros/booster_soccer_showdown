@@ -15,9 +15,7 @@ def teleop(env_name: str = "LowerT1GoaliePenaltyKick-v0"):
     lower_t1_robot = LowerT1JoyStick(env.unwrapped)
 
     # Initialize the T1 SE3 keyboard controller with the viewer
-    keyboard_controller = Se3Keyboard(
-            renderer=env.unwrapped.mujoco_renderer
-        )
+    keyboard_controller = Se3Keyboard(renderer=env.unwrapped.mujoco_renderer)
 
     # Set the reset environment callback
     keyboard_controller.set_reset_env_callback(env.reset)
@@ -32,19 +30,18 @@ def teleop(env_name: str = "LowerT1GoaliePenaltyKick-v0"):
         # Reset environment for new episode
         terminated = truncated = False
         observation, info = env.reset()
-        rewards = []
         episode_count += 1
 
         print(f"\nStarting episode {episode_count}")
 
         # Episode loop
-        while not (terminated):
+        while not (terminated or truncated):
             # Get keyboard input and apply it directly to the environment
             command = keyboard_controller.advance()
             ctrl = lower_t1_robot.get_actions(command)
             observation, reward, terminated, truncated, info = env.step(ctrl)
-            rewards.append(reward)
-            if terminated:
+            
+            if terminated or truncated:
                 break
 
         # Print episode result

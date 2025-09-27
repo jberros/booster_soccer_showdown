@@ -1,3 +1,5 @@
 sai_mujoco
+torch
+imageio
 huggingface_hub
 hf_xet

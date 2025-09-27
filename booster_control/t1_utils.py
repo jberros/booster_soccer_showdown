@@ -29,6 +29,7 @@ class LowerT1JoyStick:
         gait_process (float): Current gait phase (0 to 1).
         it (int): Iteration counter.
     """
+
     def __init__(self, env):
         """
         Initializes the joystick utility with the robot's environment and configuration.
@@ -41,8 +42,6 @@ class LowerT1JoyStick:
                 - env: Environment-specific parameters like number of actions and observations.
                 - normalization: Scaling factors for observation normalization.
         """
-
-        
 
         self.env = env
         self.model, self.cfg = self.load()
@@ -65,6 +64,7 @@ class LowerT1JoyStick:
         Returns:
             np.ndarray: The rotated vector in the original frame.
         """
+        
         q_w = q[-1]
         q_vec = q[:3]
         a = v * (2.0 * q_w**2 - 1.0)
@@ -222,7 +222,7 @@ class LowerT1JoyStick:
 
         dof_pos = mj_data.qpos.astype(np.float32)[14+self.diff:]
         dof_vel = mj_data.qvel.astype(np.float32)[12+self.diff:]
-        
+
         if self.it % self.cfg["control"]["decimation"] == 0:
             dist = self.model(torch.tensor(obs.reshape(1,-1)))
             self.actions[:] = dist.detach().numpy()

@@ -35,8 +35,8 @@ class Se3Keyboard:
         ============================== ================= =================
     """
 
-    pos_sensitivity = 2.0
-    rot_sensitivity = 1.5
+    pos_sensitivity = 0.5
+    rot_sensitivity = 0.5
 
     def __init__(self, renderer: MujocoRenderer):
         """Initialize the keyboard layer.

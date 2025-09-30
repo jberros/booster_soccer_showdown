@@ -223,7 +223,7 @@ class LowerT1JoyStick:
             self.actions[:] = dist.detach().numpy()
             self.actions[:] = np.clip(self.actions, -self.cfg["normalization"]["clip_actions"], self.cfg["normalization"]["clip_actions"])
         
-        self.dof_targets[:] = self.default_dof_pos +    self.cfg["control"]["action_scale"] * self.actions
+        self.dof_targets[:] = self.default_dof_pos + self.cfg["control"]["action_scale"] * self.actions
         ctrl = np.clip(
             self.dof_stiffness * (self.dof_targets - dof_pos) - self.dof_damping * dof_vel,
             mj_model.actuator_ctrlrange[self.diff:, 0],

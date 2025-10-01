@@ -1,6 +1,6 @@
 # BOOSTER SOCCER SHOWDOWN
 
-![Booster Soccer Showdown Banner](resources/12b96689b8d11a4e8b632e0ce5272dd6.jpg)  
+![Booster Soccer Showdown Banner](resources/comp.png)  
 
 A fast, extensible robotics soccer competition focused on **generalization across environments**. All the models and datasets are hosted on [Hugging Face](https://huggingface.co/SaiResearch) and the competition is live on [SAI](https://competesai.com/competitions/cmp_xnSCxcJXQclQ).
 

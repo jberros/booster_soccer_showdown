@@ -35,7 +35,7 @@ class Se3Keyboard:
         ============================== ================= =================
     """
 
-    def __init__(self, renderer: MujocoRenderer, pos_sensitivity = 1.5, rot_sensitivity = 1.5):
+    def __init__(self, renderer: MujocoRenderer, pos_sensitivity = 0.1, rot_sensitivity = 0.5):
         """Initialize the keyboard layer.
 
         Args:
@@ -206,8 +206,8 @@ class Se3Keyboard:
             "A": np.asarray([0.0, 1.0, 0.0]) * self.pos_sensitivity,
             "D": np.asarray([0.0, -1.0, 0.0]) * self.pos_sensitivity,
             # z-axis (rotation)
-            "Q": np.asarray([0.0, 0.0, 1.0]) * self.pos_sensitivity,
-            "E": np.asarray([0.0, 0.0, -1.0]) * self.pos_sensitivity,
+            "Q": np.asarray([0.0, 0.0, 1.0]) * self.rot_sensitivity,
+            "E": np.asarray([0.0, 0.0, -1.0]) * self.rot_sensitivity,
             # reset commands
             "L": self.reset,
             "P": self._reset_env_callback,

@@ -64,6 +64,21 @@ python booster_control/teleoperate.py \
 
 ---
 
+⚠️ **Note for macOS and Windows users**
+Because different renderers are used on macOS and Windows, you may need to adjust the **position** and **rotation** sensitivity for smooth teleoperation.
+Run the following command with the sensitivity flags set explicitly:
+
+```bash
+python booster_control/teleoperate.py \
+  --env LowerT1GoaliePenaltyKick-v0 \
+  --pos_sensitivity 1.5 \
+  --rot_sensitivity 1.5
+```
+
+(Tune `--pos_sensitivity` and `--rot_sensitivity` as needed for your setup.)
+
+---
+
 ## Mimic
 
 The `mimic/` tools let you replay and analyze motions with MuJoCo.

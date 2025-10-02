@@ -3,13 +3,13 @@ _FLOAT_EPS = np.finfo(np.float64).eps
 
 reward_config = {
     "robot_distance_ball": 0.25,
-    "ball_vel_twd_goal": 1.0,
+    "ball_vel_twd_goal": 1.5,
     "goal_scored": 2.50,
     "offside": -3.0,
-    "ball_hits": -0.1,
+    "ball_hits": -0.2,
     "robot_fallen": -1.5,
-    "ball_blocked": -1.0,
-    "steps": -0.2,
+    "ball_blocked": -0.5,
+    "steps": -1.0,
 }
 
 def evaluation_fn(env, eval_state):

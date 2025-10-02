@@ -35,10 +35,7 @@ class Se3Keyboard:
         ============================== ================= =================
     """
 
-    pos_sensitivity = 1.5
-    rot_sensitivity = 1.5
-
-    def __init__(self, renderer: MujocoRenderer):
+    def __init__(self, renderer: MujocoRenderer, pos_sensitivity = 1.5, rot_sensitivity = 1.5):
         """Initialize the keyboard layer.
 
         Args:
@@ -47,6 +44,9 @@ class Se3Keyboard:
             rot_sensitivity: Magnitude of scale input rotation commands scaling. Defaults to 0.8.
         """
         self._delta_vel =  np.zeros(3) # (x, y, yaw)
+
+        self.rot_sensitivity = rot_sensitivity
+        self.pos_sensitivity = pos_sensitivity
 
         # dictionary for additional callbacks
         self._additional_callbacks = dict()

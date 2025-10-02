@@ -12,13 +12,14 @@ def main():
     parser.add_argument("--fps", type=float, default=None, help="Playback FPS (overrides any 'fps' in the NPZ).")
     args = parser.parse_args()
 
+    robot_name = args.xml.split("/")[-1].split(".")[0]
     # --- Load trajectory ---
     try:
         data_npz = np.load(args.npz, allow_pickle=False)
     except:
         file_name = hf_hub_download(
                     repo_id="SaiResearch/booster_dataset",
-                    filename=f"soccer/{args.npz}",
+                    filename=f"soccer/{robot_name}/{args.npz}",
                     repo_type="dataset")
         data_npz = np.load(file_name, allow_pickle=False)
         

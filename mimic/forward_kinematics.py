@@ -99,9 +99,10 @@ def main():
     qpos, qvel = data_in["qpos"], data_in["qvel"]
     fk = extract_fk_package(model, qpos, qvel)
 
-    out_path = args.out or args.npz.replace(".npz", "_fk.npz")
-    np.savez(out_path, **fk)
-    print(f"✅ Saved forward kinematics to {out_path}")
+    if args.out is not None:
+        out_path = args.out or args.npz.replace(".npz", "_fk.npz")
+        np.savez(out_path, **fk)
+        print(f"✅ Saved forward kinematics to {out_path}")
 
 if __name__ == "__main__":
     main()

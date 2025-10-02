@@ -63,3 +63,45 @@ python booster_control/teleoperate.py \
 * `P`: reset environment
 
 ---
+
+## Mimic
+
+The `mimic/` tools let you replay and analyze motions with MuJoCo.
+
+### What’s inside
+
+* `mimic/forward_kinematics.py` — computes derived robot signals (end-effector poses, COM, contacts, velocities, etc.) from motion data using MuJoCo kinematics.
+* `mimic/visualize_data.py` — replays a motion in the MuJoCo viewer at a chosen FPS.
+* **Model**: the Booster T1 MuJoCo XML is in `mimic/assets/booster_t1/`.
+
+> Motion files are hosted on [Hugging Face](https://huggingface.co/datasets/SaiResearch/booster_dataset) and can be downloaded to use with these scripts. 
+
+---
+
+### 1) Compute kinematics from a motion file
+
+```bash
+python mimic/forward_kinematics.py \
+  --xml mimic/assets/booster_t1/booster_t1.xml \
+  --npz goal_kick.npz \
+  --out out/example_motion_fk.npz
+```
+
+**Args (common):**
+
+* `--xml` : path to the MuJoCo model XML.
+* `--npz` : Name of the motion file (`.npz`).
+* `--out` : output `.npz` file with enriched signals.
+
+---
+
+### 2) Visualize a motion in MuJoCo
+
+```bash
+# Visualize raw motion
+python mimic/visualize_data.py \
+  --xml mimic/assets/booster_t1/booster_t1.xml \
+  --npz goal_kick.npz \
+  --fps 30
+```
+---

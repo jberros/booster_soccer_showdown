@@ -8,7 +8,7 @@ import sai_mujoco  # noqa: F401
 import gymnasium as gym
 from se3_keyboard import Se3Keyboard
 from t1_utils import LowerT1JoyStick
-
+from eval_function_kick_to_target import evaluation_fn
 def teleop(env_name: str = "LowerT1GoaliePenaltyKick-v0"):
 
     env = gym.make(env_name, render_mode="human")
@@ -33,17 +33,19 @@ def teleop(env_name: str = "LowerT1GoaliePenaltyKick-v0"):
         episode_count += 1
 
         print(f"\nStarting episode {episode_count}")
-
-        # Episode loop
+        rewards = 0
+        # Episode loop  
         while not (terminated or truncated):
             # Get keyboard input and apply it directly to the environment
             command = keyboard_controller.advance()
             ctrl = lower_t1_robot.get_actions(command, observation, info)
             observation, reward, terminated, truncated, info = env.step(ctrl)
-            
+            reward = evaluation_fn(env.unwrapped, {"terminated": terminated, "truncated": truncated})[0]
+            rewards += reward
             if terminated or truncated:
                 break
-
+                
+        print(f"Total Rewards : {rewards}")
         # Print episode result
         if info.get("success", False):
             print(f"Episode {episode_count} completed successfully!")

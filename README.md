@@ -104,7 +104,7 @@ python mimic/forward_kinematics.py \
 
 **Args (common):**
 
-* `--xml` : path to the MuJoCo model XML.
+* `--xml` : path to the MuJoCo model XML (booster_t1 or booster_lower_t1)
 * `--npz` : Name of the motion file (`.npz`).
 * `--out` : output `.npz` file with enriched signals.
 

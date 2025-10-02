@@ -83,13 +83,14 @@ def main():
     parser.add_argument("--out", required=False, help="Path to output npz (default: input name + _fk.npz)")
     args = parser.parse_args()
 
+    robot_name = args.xml.split("/")[-1].split(".")[0]
     model = mujoco.MjModel.from_xml_path(args.xml)
     try:
         data_in = np.load(args.npz, allow_pickle=False)
     except:
         file_name = hf_hub_download(
                     repo_id="SaiResearch/booster_dataset",
-                    filename=f"soccer/{args.npz}",
+                    filename=f"soccer/{robot_name}/{args.npz}",
                     repo_type="dataset")
         data_in = np.load(file_name, allow_pickle=False)
 

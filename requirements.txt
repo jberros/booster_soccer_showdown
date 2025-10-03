@@ -1,4 +1,5 @@
 sai_mujoco
+sai_rl
 torch
 imageio
 huggingface_hub

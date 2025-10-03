@@ -120,3 +120,63 @@ python mimic/visualize_data.py \
   --fps 30
 ```
 ---
+
+## Training
+
+We provide a minimal reinforcement learning pipeline for training agents with **Deep Deterministic Policy Gradient (DDPG)** in the Booster Soccer Showdown environments. The training stack consists of three scripts:
+
+### 1) `ddpg.py`
+
+Defines the **DDPG_FF model**, including:
+
+* Actor and Critic neural networks with configurable hidden layers and activation functions.
+* Target networks and soft-update mechanism for stability.
+* Training step implementation (critic loss with MSE, actor loss with policy gradient).
+* Utility functions for forward passes, action selection, and backpropagation.
+
+---
+
+### 2) `training.py`
+
+Provides the **training loop** and supporting components:
+
+* **ReplayBuffer** for experience storage and sampling.
+* **Exploration noise** injection to encourage policy exploration.
+* Iterative training loop that:
+
+  * Interacts with the environment.
+  * Stores experiences.
+  * Periodically samples minibatches to update actor/critic networks.
+* Tracks and logs progress (episode rewards, critic/actor loss) with `tqdm`.
+
+---
+
+### 3) `main.py`
+
+Serves as the **entry point** to run training:
+
+* Initializes the Booster Soccer Showdown environment via the **SAI client**.
+* Defines a **Preprocessor** to normalize and concatenate robot state, ball state, and environment info into a training-ready observation vector.
+* Instantiates a **DDPG_FF model** with custom architecture.
+* Defines an **action function** that rescales raw policy outputs to environment-specific action bounds.
+* Calls the training loop, and after training, supports:
+
+  * `sai.watch(...)` for visualizing learned behavior.
+  * `sai.benchmark(...)` for local benchmarking.
+
+---
+
+### Example: Run Training
+
+```bash
+python main.py
+```
+
+This will:
+
+1. Build the environment.
+2. Initialize the model.
+3. Run the training loop with replay buffer and DDPG updates.
+4. Launch visualization and benchmarking after training.
+
+

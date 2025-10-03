@@ -123,7 +123,7 @@ python mimic/visualize_data.py \
 
 ## Training
 
-We provide a minimal reinforcement learning pipeline for training agents with **Deep Deterministic Policy Gradient (DDPG)** in the Booster Soccer Showdown environments. The training stack consists of three scripts:
+We provide a minimal reinforcement learning pipeline for training agents with **Deep Deterministic Policy Gradient (DDPG)** in the Booster Soccer Showdown environments in the `training_scripts/` folder. The training stack consists of three scripts:
 
 ### 1) `ddpg.py`
 

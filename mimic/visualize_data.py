@@ -4,22 +4,27 @@ import numpy as np
 import mujoco
 from mujoco import viewer
 from huggingface_hub import hf_hub_download
+import pathlib
 
+HERE = pathlib.Path(__file__).parent
 def main():
     parser = argparse.ArgumentParser(description="Play qpos from NPZ in MuJoCo.")
-    parser.add_argument("--xml", required=True, help="Path to MuJoCo XML model.")
+    parser.add_argument(
+        "--robot",
+        choices=["booster_t1", "booster_lower_t1"],
+        default="booster_t1",
+    )
     parser.add_argument("--npz", required=True, help="Path to .npz with qpos (T, nq).")
     parser.add_argument("--fps", type=float, default=None, help="Playback FPS (overrides any 'fps' in the NPZ).")
     args = parser.parse_args()
 
-    robot_name = args.xml.split("/")[-1].split(".")[0]
     # --- Load trajectory ---
     try:
         data_npz = np.load(args.npz, allow_pickle=False)
     except:
         file_name = hf_hub_download(
                     repo_id="SaiResearch/booster_dataset",
-                    filename=f"soccer/{robot_name}/{args.npz}",
+                    filename=f"soccer/{args.robot}/{args.npz}",
                     repo_type="dataset")
         data_npz = np.load(file_name, allow_pickle=False)
         
@@ -39,7 +44,7 @@ def main():
     dt_frame = 1.0 / fps
 
     # --- Load model & data ---
-    model = mujoco.MjModel.from_xml_path(args.xml)
+    model = mujoco.MjModel.from_xml_path(f"{HERE}/assets/booster_t1/{args.robot}.xml")
     data = mujoco.MjData(model)
 
     T, nq = qpos_traj.shape

@@ -97,14 +97,14 @@ The `mimic/` tools let you replay and analyze motions with MuJoCo.
 
 ```bash
 python mimic/forward_kinematics.py \
-  --xml mimic/assets/booster_t1/booster_t1.xml \
+  --robot booster_t1 \
   --npz goal_kick.npz \
   --out out/example_motion_fk.npz
 ```
 
 **Args (common):**
 
-* `--xml` : path to the MuJoCo model XML (booster_t1 or booster_lower_t1)
+* `--robot` : robot to be loaded (choices: booster_t1 or booster_lower_t1)
 * `--npz` : Name of the motion file (`.npz`).
 * `--out` : output `.npz` file with enriched signals.
 
@@ -115,7 +115,7 @@ python mimic/forward_kinematics.py \
 ```bash
 # Visualize raw motion
 python mimic/visualize_data.py \
-  --xml mimic/assets/booster_t1/booster_t1.xml \
+  --robot booster_t1 \
   --npz goal_kick.npz \
   --fps 30
 ```

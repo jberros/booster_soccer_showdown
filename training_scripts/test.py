@@ -14,7 +14,6 @@ sys.path.append(repo_root)
 import sai_mujoco  # noqa: F401  # registers envs
 from booster_control.t1_utils import LowerT1JoyStick
 
-
 # ---------- Command→Action wrapper ----------
 class CommandActionWrapper(gym.ActionWrapper):
     def __init__(self, env):
@@ -99,7 +98,7 @@ def main():
 
     # Load model
     try:
-        model = TD3.load(model_file, env=env, device=args.device)
+        model = TD3.load(model_file, device=args.device)
     except Exception as e:
         print(f"[ERROR] Failed to load TD3 model from '{model_file}'. Details: {e}")
         sys.exit(1)
@@ -108,8 +107,13 @@ def main():
     for ep in range(args.episodes):
         terminated = truncated = False
         obs, info = env.reset(seed=42 + ep)
+        action = np.array([0, 0, 0])
         ep_return = 0.0
         while not (terminated or truncated):
+
+            if "Kick" in args.env:
+                obs = env.lower_control.get_obs(action, obs, info)
+
             action, _ = model.predict(obs, deterministic=True)
             obs, reward, terminated, truncated, info = env.step(action)
             ep_return += float(reward)

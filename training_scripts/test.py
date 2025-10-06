@@ -111,7 +111,7 @@ def main():
         ep_return = 0.0
         while not (terminated or truncated):
 
-            if "Kick" in args.env:
+            if "KickToTarget" in args.env:
                 obs = env.lower_control.get_obs(action, obs, info)
 
             action, _ = model.predict(obs, deterministic=True)
